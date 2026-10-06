@@ -1,21 +1,27 @@
 # SecPortal · WiFi 访客认证平台（发行版）
 
-SecPortal 是一个自带 **RADIUS 服务器**的无线访客认证（Captive Portal）平台。访客连上 SSID 后自动弹出认证页，可选择**一键上网 / 短信认证 / 账号认证 / 广告认证**等方式接入；管理后台统一管理 NAS 设备、账号、认证策略、在线会话与日志审计，并提供 AD / LDAP 域认证、按组下发 VLAN、无感知认证、SAML / 微信 / 钉钉扫码登录等企业能力。
+SecPortal 是一个自带 **RADIUS 服务器**的无线访客认证（Captive Portal）平台。访客连上 SSID 后自动弹出认证页，可选择**一键上网 / 短信认证 / 账号认证 / 广告认证 / 凭券上网 / SAML / 微信 / 钉钉**等方式接入；管理后台统一管理 NAS 设备、账号、认证策略、在线会话与日志审计，并提供 AD / LDAP 域认证、按组下发 VLAN、无感知认证、RADIUS 上游代理（AAA 中转）、802.1X（EAP-TLS / PEAP-MSCHAPv2）、设备准入名单等企业能力。
 
 本仓库是**发行仓库**：只提供预编译安装包与安装文档，不含源码。
 
 ## 下载
 
 1. 前往 [Releases](https://github.com/lechance/SecPortalPub/releases) 下载最新版
-   `secportal-<版本>-linux-x64.tar.gz`（当前为 `secportal-1.2.1-linux-x64.tar.gz`，约 57.5 MB）；
-2. 核对 sha256 —— 每个 Release 说明页都会给出校验值。
+   `secportal-1.3.0-linux-x64.tar.gz`（当前版本 `1.3.0`，约 59.9 MB）；
+2. 核对 sha256 —— 本版校验值：
+
+   ```
+   d6ee13f673264f966fd89bf8a4ec4a804b10feb0dac68d39a9ad937098a6b796
+   ```
+
+   （每个 Release 说明页也会给出同样的值。）
 
 ## 安装
 
 按 [INSTALL.md](./INSTALL.md) 操作，四个步骤：
 
 ```bash
-tar xzf secportal-1.2.1-linux-x64.tar.gz && cd secportal-1.2.1-linux-x64
+tar xzf secportal-1.3.0-linux-x64.tar.gz && cd secportal-1.3.0-linux-x64
 sha256sum -c MANIFEST.sha256                 # 包内文件完整性
 sudo rsync -a ./ /opt/secportal/             # 落地（详见文档，含建用户与改属主）
 sudo install -m 644 deploy/secportal.service /etc/systemd/system/ && sudo systemctl enable --now secportal
@@ -46,5 +52,5 @@ sudo install -m 644 deploy/secportal.service /etc/systemd/system/ && sudo system
 安装或认证异常请附上以下信息通过微信反馈：
 
 - 版本 / 构建号：后台「系统状态 → 运行环境 · 软件版本」，或 `GET /api/public/health`
-  返回的 `build` 字段（如 `1.2.1+g25fbeab`，`.dirty` 表示含未提交改动）；
+  返回的 `build` 字段（如 `1.3.0+g<短提交>`，`.dirty` 表示含未提交改动）；
 - 日志片段：`journalctl -u secportal -n 200 --no-pager`。
