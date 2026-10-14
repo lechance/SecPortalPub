@@ -1,0 +1,8 @@
+# Wrangler local state
+.wrangler/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log

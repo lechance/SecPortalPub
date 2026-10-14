@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecPortal · 企业级无线访客认证与准入平台</title>
-<meta name="description" content="SecPortal 是自带 RADIUS 服务器的无线访客认证（Captive Portal）平台，支持一键上网、短信认证、账号认证、广告认证四种接入方式，提供 AD/LDAP 域认证、VLAN 下发、无感知认证等企业级能力。">
+<title>SecPortal · 企业级无线访客认证与网络准入平台</title>
+<meta name="description" content="SecPortal 是自带 RADIUS 服务器的企业级无线访客认证（Captive Portal）平台。支持一键上网、短信认证、账号认证、视频认证等十余种接入方式，提供 AD/LDAP 域认证、VLAN 动态下发、无感知认证、Portal 模板与轮播、营销与商务化认证等完整企业级准入能力。零外部组件依赖，开箱即用。项目主页与联系：https://github.com/lechance/SecPortalpub">
 <style>
 /* ============ 设计令牌 ============ */
 :root{
@@ -556,12 +556,13 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
       <a href="#arch">平台架构</a>
       <a href="#capability">企业能力</a>
       <a href="#admin">管理后台</a>
-      <a href="#cta">联系我们</a>
+      <a href="#protocol">协议标准</a>
+      <a href="#contact">联系我们</a>
     </nav>
     <div class="nav-cta">
-      <a href="#admin" class="btn btn-ghost">在线演示</a>
-      <a href="#cta" class="btn btn-primary">
-        申请试用
+      <a href="#auth" class="btn btn-ghost">核心能力</a>
+      <a href="#contact" class="btn btn-primary">
+        获取产品
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
       <button class="menu-toggle" id="menuToggle" aria-label="菜单">
@@ -575,20 +576,21 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
   <a href="#arch">平台架构</a>
   <a href="#capability">企业能力</a>
   <a href="#admin">管理后台</a>
-  <a href="#cta">联系我们</a>
-  <a href="#cta" class="btn btn-primary">申请试用</a>
+  <a href="#protocol">协议标准</a>
+  <a href="#contact">联系我们</a>
+  <a href="#contact" class="btn btn-primary">获取产品</a>
 </div>
 
 <!-- ============ Hero ============ -->
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-      <span class="hero-badge"><b>NEW</b> 自带 RADIUS 服务器 · 开箱即用</span>
-      <h1>企业级<span class="grad">无线访客认证</span><br>与准入管控平台</h1>
-      <p class="lead">访客连上 SSID 即自动弹出认证页，一键上网 / 短信认证 / 账号认证 / 广告认证四种方式自由组合。内置 RADIUS 服务器，无需额外部署，从认证到准入一站式完成。</p>
+      <span class="hero-badge"><b>NEW</b> 自带 RADIUS 服务器 · 企业级准入</span>
+      <h1>企业级<span class="grad">无线访客认证</span><br>与网络准入管控平台</h1>
+      <p class="lead">访客连上 SSID 自动弹出认证页，一键上网 / 短信认证 / 账号认证 / 视频认证等十余种方式自由组合。平台自带 RADIUS 服务器，并内置 LDAP、数据库与前端全部自研，无需额外部署，从认证、授权到计费一站式完成。</p>
       <div class="hero-actions">
-        <a href="#cta" class="btn btn-primary btn-lg">
-          免费申请试用
+        <a href="#auth" class="btn btn-primary btn-lg">
+          了解核心能力
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
         <a href="#arch" class="btn btn-on-dark btn-lg">
@@ -597,9 +599,9 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
         </a>
       </div>
       <div class="hero-stats">
-        <div class="st"><div class="n">4<span> 种</span></div><div class="l">认证接入方式</div></div>
-        <div class="st"><div class="n">1<span> 台</span></div><div class="l">内置 RADIUS 服务器</div></div>
-        <div class="st"><div class="n">10<span> 万+</span></div><div class="l">并发会话承载</div></div>
+        <div class="st"><div class="n">10<span> +</span></div><div class="l">认证与接入方式</div></div>
+        <div class="st"><div class="n">1<span> 套</span></div><div class="l">内置 RADIUS 服务器</div></div>
+        <div class="st"><div class="n">8<span> 套</span></div><div class="l">内置 Portal 模板</div></div>
       </div>
     </div>
 
@@ -644,7 +646,7 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           </div>
           <div class="auth-item ai-4">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="10 8 16 12 10 16 10 8"/><rect x="2" y="4" width="20" height="16" rx="3"/></svg></span>
-            <div class="tx">广告认证<small>观看广告免费上网</small></div>
+            <div class="tx">视频认证<small>观看视频免费上网</small></div>
             <span class="go">›</span>
           </div>
 
@@ -659,10 +661,11 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
 <div class="trustbar">
   <div class="wrap">
     <span class="lab">企业级协议与标准支持</span>
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>RADIUS / RFC 2865</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>RADIUS / RFC 2865·2866</div>
     <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M4 7h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/></svg>AD / LDAP 域认证</div>
     <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/><circle cx="12" cy="12" r="10"/></svg>VLAN 动态下发</div>
-    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>MAC 厂商标识</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>无感知认证</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>CoA / RFC 5176</div>
   </div>
 </div>
 
@@ -671,8 +674,8 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="eyebrow">Authentication</span>
-      <h2>四种认证方式，灵活组合，覆盖全部访客场景</h2>
-      <p>管理员可按 SSID、时间段、访客类型自由配置认证策略。访客连上无线后自动弹出 Portal 页面，选择任意一种方式即可完成接入，全程无需人工干预。</p>
+      <h2>丰富认证方式，灵活组合，覆盖全部访客场景</h2>
+      <p>除了一键、短信、账号、视频四种核心方式，还支持上网券、统一登录（SAML）、微信 / 企业微信、钉钉与付费上网等扩展方式，可按 SSID、NAS、用户组与时间段配置认证策略，访客连上无线即自动弹出 Portal 完成接入。</p>
     </div>
     <div class="auth-grid">
       <article class="auth-card reveal" data-d="1">
@@ -681,7 +684,7 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
         </div>
         <h3>一键上网</h3>
-        <p>访客点击「立即上网」按钮即可完成接入，无需任何信息输入，适合商场、展厅、会议室等追求极致体验的场景。</p>
+        <p>访客点击「立即上网」即可接入，无需任何信息输入，默认会话 4 小时，适合商场、展厅、会议室等追求极致体验的场景。</p>
         <div class="auth-tags"><span class="tag">零输入</span><span class="tag">极速接入</span><span class="tag">可限时长</span></div>
       </article>
 
@@ -691,7 +694,7 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg>
         </div>
         <h3>短信认证</h3>
-        <p>访客输入手机号获取验证码完成实名认证，满足公共场所网络安全合规要求，同时沉淀真实访客数据。</p>
+        <p>访客输入手机号获取验证码完成接入，满足公共场所实名合规要求，内置限流防骚扰，支持阿里云 / 腾讯云 / 赛邮等多通道。</p>
         <div class="auth-tags"><span class="tag">实名合规</span><span class="tag">验证码校验</span><span class="tag">多通道</span></div>
       </article>
 
@@ -701,8 +704,8 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         </div>
         <h3>账号认证</h3>
-        <p>使用管理员统一分配的账号密码接入，支持有效期、流量、并发数等多维管控，适用于员工与长期访客。</p>
-        <div class="auth-tags"><span class="tag">账号池</span><span class="tag">有效期</span><span class="tag">限速策略</span></div>
+        <p>使用管理员统一分配的账号密码接入，本地密码校验失败时自动回退 AD 域认证，支持有效期、流量、并发等多维管控。</p>
+        <div class="auth-tags"><span class="tag">账号池</span><span class="tag">AD 回退</span><span class="tag">限速策略</span></div>
       </article>
 
       <article class="auth-card reveal" data-d="4">
@@ -710,10 +713,15 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
         <div class="auth-icon ic-pink">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="10 8 16 12 10 16 10 8"/><rect x="2" y="4" width="20" height="16" rx="3"/></svg>
         </div>
-        <h3>广告认证</h3>
-        <p>访客观看品牌广告或完成指定互动后获得上网权限，把每一次接入转化为品牌触达与营销机会。</p>
-        <div class="auth-tags"><span class="tag">品牌曝光</span><span class="tag">轮播管理</span><span class="tag">跳转链接</span></div>
+        <h3>视频 / 广告认证</h3>
+        <p>访客观看视频或广告后免费上网，服务端强制校验真实观看时长、拦截跳过，用于商业运营与营销触达场景。</p>
+        <div class="auth-tags"><span class="tag">防跳过</span><span class="tag">时长校验</span><span class="tag">营销触达</span></div>
       </article>
+    </div>
+
+    <div class="flow-note reveal">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><b>更多接入方式</b> <span>· 相邻验证：上网券 · 统一登录（SAML）· 微信 / 企业微信 · 钉钉 · 付费上网</span></div>
     </div>
   </div>
 </section>
@@ -831,6 +839,36 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>授权状态实时可见</div>
         </div>
       </article>
+
+      <article class="cap-card reveal" data-d="1">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 8h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M9 15h6M9 11h2"/></svg></div>
+        <h3>上网券与付费上网</h3>
+        <p>批量生成上网券码，适合酒店、医院、展会等运营发券场景；亦可配置时长 + 流量套餐实现付费上网与授权收款。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>批量发券 / 核销</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>套餐定价与支付通道</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="2">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div>
+        <h3>统一登录（SAML）</h3>
+        <p>与企业 IdP（Entra ID / AD FS / Okta）深度集成，实现企业单点登录，断言验签、防重放等安全边界完备。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>对接主流 IdP</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>安全断言验签</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="3">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg></div>
+        <h3>会话计费与日志审计</h3>
+        <p>完整计费链路（Start / Interim / Stop）、实时计数与在线会话，全量认证日志与操作审计，支持 CSV 导出与合规追溯。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>流量实时统计</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>审计日志与导出</div>
+        </div>
+      </article>
     </div>
   </div>
 </section>
@@ -871,7 +909,7 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
         <div class="dash">
           <div class="dash-bar">
             <span class="bd bd-r"></span><span class="bd bd-y"></span><span class="bd bd-g"></span>
-            <span class="url">https://secportal.local/admin/console</span>
+            <span class="url">https://portal.your-company.com/admin/console</span>
           </div>
           <div class="dash-body">
             <div class="dash-kpis">
@@ -896,7 +934,7 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
               <div class="dt-row"><span class="name"><span class="dot"></span>iPhone · 王先生</span><span>短信认证</span><span>VLAN 20</span><span class="pill pill-ok">在线</span></div>
               <div class="dt-row"><span class="name"><span class="dot"></span>MacBook · 李工</span><span>AD 域认证</span><span>VLAN 10</span><span class="pill pill-ok">在线</span></div>
               <div class="dt-row"><span class="name"><span class="dot"></span>Android · 访客</span><span>一键上网</span><span>VLAN 30</span><span class="pill pill-blue">已授权</span></div>
-              <div class="dt-row"><span class="name"><span class="dot" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.16)"></span>iPad · 展厅</span><span>广告认证</span><span>VLAN 40</span><span class="pill pill-warn">即将超时</span></div>
+              <div class="dt-row"><span class="name"><span class="dot" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.16)"></span>iPad · 展厅</span><span>视频认证</span><span>VLAN 40</span><span class="pill pill-warn">即将超时</span></div>
             </div>
           </div>
         </div>
@@ -909,33 +947,77 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
 <section class="pad-sm">
   <div class="wrap">
     <div class="metrics">
-      <div class="metric reveal" data-d="1"><div class="mn" data-count="99.99" data-suffix="%">0%</div><div class="ml">认证服务可用性</div></div>
-      <div class="metric reveal" data-d="2"><div class="mn" data-count="3" data-suffix=" 秒">0</div><div class="ml">平均认证耗时</div></div>
-      <div class="metric reveal" data-d="3"><div class="mn" data-count="10" data-suffix=" 万+">0</div><div class="ml">单机并发会话</div></div>
-      <div class="metric reveal" data-d="4"><div class="mn" data-count="30" data-suffix=" 分钟">0</div><div class="ml">快速部署上线</div></div>
+      <div class="metric reveal" data-d="1"><div class="mn" data-count="10" data-suffix="+">0</div><div class="ml">认证与接入方式</div></div>
+      <div class="metric reveal" data-d="2"><div class="mn" data-count="8" data-suffix=" 套">0</div><div class="ml">内置 Portal 模板</div></div>
+      <div class="metric reveal" data-d="3"><div class="mn" data-count="66" data-suffix="+">0</div><div class="ml">内置 MAC 厂商标识</div></div>
+      <div class="metric reveal" data-d="4"><div class="mn" data-count="0" data-suffix=" 外部依赖">0</div><div class="ml">仅依赖 Express</div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
-<section class="pad cta" id="cta">
+<!-- ============ 协议标准 ============ -->
+<section class="pad arch" id="protocol">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Standards</span>
+      <h2>协议与标准，全面合规</h2>
+      <p>内置自研 RADIUS / LDAP 协议栈，兼容主流厂商设备，无需外部组件即可深度融入企业现有网络架构。</p>
+    </div>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>标准 RADIUS</h4>
+        <p>RFC 2865 / 2866 认证计费</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></div>
+        <h4>动态授权</h4>
+        <p>CoA / RFC 5176 强制下线</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M4 7h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/></svg></div>
+        <h4>LDAP / AD</h4>
+        <p>自研客户端 · 域认证</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M6 7V4h12v3M12 11v6M9 14h6"/></svg></div>
+        <h4>VLAN 下发</h4>
+        <p>RFC 2868 Tunnel 属性</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h4>多厂商兼容</h4>
+        <p>Cisco · 华为 · Aruba 等</p>
+      </div>
+    </div>
+
+    <div class="flow-note reveal">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/></svg></span>
+      <div><b>安全设计</b> <span>· 密码 scrypt 加盐哈希 · 票据 HMAC 签名 · 授权码 Ed25519 验签 · 短信防刷与账号锁定</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA / 联系我们 ============ -->
+<section class="pad cta" id="contact">
   <div class="wrap">
     <h2 class="reveal">让每一次无线接入<br>都安全、合规、可控</h2>
-    <p class="reveal" data-d="1">立即申请 SecPortal 免费试用，30 分钟完成部署，体验自带 RADIUS 的企业级访客认证与准入能力。</p>
+    <p class="reveal" data-d="1">我们希望与更多生态伙伴与客户交流，获取部署文档、功能详情与演示，请通过我们的项目主页与我们联系。</p>
     <div class="cta-actions reveal" data-d="2">
-      <a href="#" class="btn btn-primary btn-lg">
-        免费申请试用
+      <a href="https://github.com/lechance/SecPortalpub" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+        访问项目主页
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </a>
-      <a href="#" class="btn btn-on-dark btn-lg">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        预约产品演示
+      <a href="https://github.com/lechance/SecPortalpub" class="btn btn-on-dark btn-lg" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        GitHub 社区
       </a>
     </div>
     <div class="cta-points reveal" data-d="3">
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>30 天全功能试用</div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>专业技术支持</div>
-      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>私有化部署方案</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>README 完整文档</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>部署与接入指南</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>生态合作洽谈</div>
     </div>
   </div>
 </section>
@@ -949,36 +1031,35 @@ footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
           <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
           SecPortal
         </div>
-        <p>自带 RADIUS 服务器的企业级无线访客认证与准入管控平台，让每一次接入都安全可控。</p>
+        <p>自带 RADIUS 服务器的企业级无线访客认证与网络准入管控平台，让每一次接入都安全、合规、可控。</p>
       </div>
       <div class="foot-col">
         <h5>产品功能</h5>
         <a href="#auth">一键上网</a>
         <a href="#auth">短信认证</a>
         <a href="#auth">账号认证</a>
-        <a href="#auth">广告认证</a>
+        <a href="#auth">视频认证</a>
       </div>
       <div class="foot-col">
         <h5>企业能力</h5>
         <a href="#capability">AD / LDAP 域认证</a>
         <a href="#capability">VLAN 动态下发</a>
         <a href="#capability">无感知认证</a>
-        <a href="#capability">Portal 模板管理</a>
+        <a href="#capability">统一登录（SAML）</a>
       </div>
       <div class="foot-col">
         <h5>支持</h5>
         <a href="#admin">管理后台</a>
         <a href="#arch">部署架构</a>
-        <a href="#cta">申请试用</a>
-        <a href="#cta">联系我们</a>
+        <a href="#protocol">协议标准</a>
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener">联系我们</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <p>© 2026 SecPortal. 企业级无线访客认证与准入平台. All rights reserved.</p>
+      <p>© 2026 SecPortal. All rights reserved.</p>
       <div class="foot-social">
-        <a href="#" aria-label="邮件"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/></svg></a>
-        <a href="#" aria-label="电话"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg></a>
-        <a href="#" aria-label="官网"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></a>
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.69.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A11.51 11.51 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></a>
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener" aria-label="项目主页"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></a>
       </div>
     </div>
   </div>

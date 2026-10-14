@@ -1,0 +1,7 @@
+name = "secportal"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Serve the static site from ./dist as Worker static assets.
+# Any unmatched path falls back to serving index.html (SPA-style routing).
+assets = { directory = "./dist", binding = "ASSETS", not_found_handling = "single-page-application", html_handling = "auto-trailing-slash" }
