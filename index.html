@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecPortal · 企业级无线访客认证与网络准入平台</title>
+<meta name="description" content="SecPortal 是自带 RADIUS 服务器的企业级无线访客认证（Captive Portal）平台。支持一键上网、短信认证、账号认证、视频认证等十余种接入方式，提供 AD/LDAP 域认证、VLAN 动态下发、无感知认证、Portal 模板与轮播、营销与商务化认证等完整企业级准入能力。零外部组件依赖，开箱即用。项目主页与联系：https://github.com/lechance/SecPortalpub">
+<style>
+/* ============ 设计令牌 ============ */
+:root{
+  --brand-50:#eef4ff;
+  --brand-100:#dbe6ff;
+  --brand-200:#bcd0ff;
+  --brand-300:#8fb0ff;
+  --brand-400:#5b83fb;
+  --brand-500:#3563f0;
+  --brand-600:#1f47d6;
+  --brand-700:#1a37ab;
+  --brand-800:#1b3187;
+  --brand-900:#1c2e6b;
+
+  --cyan-400:#22d3ee;
+  --cyan-500:#06b6d4;
+  --cyan-600:#0891b2;
+
+  --ink-900:#0b1220;
+  --ink-800:#131c2e;
+  --ink-700:#1e293b;
+  --ink-600:#334155;
+  --ink-500:#475569;
+  --ink-400:#64748b;
+  --ink-300:#94a3b8;
+  --ink-200:#cbd5e1;
+  --ink-100:#e2e8f0;
+  --ink-50:#f1f5f9;
+  --paper:#ffffff;
+  --paper-soft:#f7f9fc;
+
+  --radius-sm:10px;
+  --radius:16px;
+  --radius-lg:24px;
+  --radius-xl:32px;
+
+  --shadow-sm:0 1px 2px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.04);
+  --shadow:0 4px 12px rgba(15,23,42,.06),0 12px 32px -12px rgba(15,23,42,.12);
+  --shadow-lg:0 24px 60px -20px rgba(15,23,42,.22),0 8px 24px -12px rgba(15,23,42,.10);
+  --shadow-brand:0 20px 48px -18px rgba(31,71,214,.45);
+
+  --maxw:1180px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ============ 基础 ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+body{
+  font-family:"Inter","SF Pro SC","PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  color:var(--ink-700);
+  background:var(--paper);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+::selection{background:var(--brand-500);color:#fff}
+
+.wrap{width:100%;max-width:var(--maxw);margin:0 auto;padding:0 28px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--brand-600);
+}
+.eyebrow::before{
+  content:"";width:20px;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--brand-500),var(--cyan-500));
+}
+.sec-head{max-width:720px;margin-bottom:56px}
+.sec-head h2{
+  font-size:clamp(28px,3.6vw,42px);
+  line-height:1.24;letter-spacing:-.02em;font-weight:700;color:var(--ink-900);
+  margin:18px 0 16px;
+}
+.sec-head p{font-size:17px;color:var(--ink-400);line-height:1.8}
+.center{text-align:center;margin-left:auto;margin-right:auto}
+.center .eyebrow::before{display:none}
+.center .eyebrow{padding:6px 14px;border-radius:999px;background:var(--brand-50);color:var(--brand-600)}
+
+section{position:relative}
+.pad{padding:110px 0}
+.pad-sm{padding:80px 0}
+
+/* ============ 导航 ============ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  transition:background .35s var(--ease),box-shadow .35s var(--ease),border-color .35s var(--ease);
+  border-bottom:1px solid transparent;
+}
+header.scrolled{
+  background:rgba(255,255,255,.82);
+  backdrop-filter:saturate(180%) blur(18px);
+  -webkit-backdrop-filter:saturate(180%) blur(18px);
+  border-bottom-color:rgba(15,23,42,.07);
+  box-shadow:0 8px 30px -18px rgba(15,23,42,.28);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:700;font-size:19px;color:var(--ink-900);letter-spacing:-.01em}
+.logo .mark{
+  width:36px;height:36px;border-radius:11px;
+  background:linear-gradient(140deg,var(--brand-500),var(--brand-700) 55%,var(--cyan-500));
+  display:grid;place-items:center;color:#fff;
+  box-shadow:0 8px 20px -8px rgba(31,71,214,.7);
+}
+.logo .mark svg{width:19px;height:19px}
+.logo.on-dark{color:#fff}
+.nav-links{display:flex;align-items:center;gap:34px}
+.nav-links a{
+  font-size:14.5px;font-weight:500;color:var(--ink-600);
+  position:relative;padding:4px 0;transition:color .25s var(--ease);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:-2px;width:0;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--brand-500),var(--cyan-500));
+  transition:width .3s var(--ease);
+}
+.nav-links a:hover{color:var(--brand-600)}
+.nav-links a:hover::after{width:100%}
+/* 未滚动时（深色 Hero 之上）导航使用浅色 */
+header:not(.scrolled) .logo{color:#fff}
+header:not(.scrolled) .nav-links a{color:rgba(255,255,255,.72)}
+header:not(.scrolled) .nav-links a:hover{color:#fff}
+header:not(.scrolled) .btn-ghost{color:#fff;border-color:rgba(255,255,255,.26);background:rgba(255,255,255,.07)}
+header:not(.scrolled) .btn-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff;background:rgba(255,255,255,.14)}
+header:not(.scrolled) .menu-toggle{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.24);color:#fff}
+.nav-cta{display:flex;align-items:center;gap:12px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-size:14.5px;font-weight:600;letter-spacing:.01em;
+  padding:12px 24px;border-radius:11px;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease),color .25s var(--ease),border-color .25s var(--ease);
+  white-space:nowrap;
+}
+.btn svg{width:16px;height:16px;transition:transform .25s var(--ease)}
+.btn-primary{
+  background:linear-gradient(135deg,var(--brand-500),var(--brand-700));
+  color:#fff;box-shadow:var(--shadow-brand);
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 26px 56px -18px rgba(31,71,214,.6)}
+.btn-primary:hover svg{transform:translateX(3px)}
+.btn-ghost{color:var(--ink-700);border:1px solid var(--ink-200);background:#fff}
+.btn-ghost:hover{border-color:var(--brand-300);color:var(--brand-600);transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn-on-dark{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px)}
+.btn-on-dark:hover{background:rgba(255,255,255,.18);transform:translateY(-2px)}
+.btn-lg{padding:15px 30px;font-size:15.5px;border-radius:13px}
+
+/* ============ Hero ============ */
+.hero{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(1100px 620px at 78% -8%,rgba(34,211,238,.22),transparent 62%),
+    radial-gradient(900px 620px at 6% 8%,rgba(53,99,240,.34),transparent 60%),
+    linear-gradient(165deg,#0a1020 0%,#0d1830 42%,#111f45 100%);
+  padding:170px 0 130px;
+  color:#fff;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:64px 64px;
+  mask-image:radial-gradient(ellipse 90% 70% at 50% 30%,#000 20%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 70% at 50% 30%,#000 20%,transparent 78%);
+  pointer-events:none;
+}
+.hero-grid{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1.06fr .94fr;gap:64px;align-items:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:7px 15px 7px 9px;border-radius:999px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+  font-size:13px;font-weight:500;color:#c7d6f7;backdrop-filter:blur(10px);
+}
+.hero-badge b{
+  display:inline-flex;align-items:center;
+  padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.04em;
+  background:linear-gradient(135deg,var(--cyan-400),var(--cyan-600));color:#04222b;
+}
+.hero h1{
+  font-size:clamp(34px,4.5vw,58px);
+  line-height:1.12;letter-spacing:-.03em;font-weight:700;color:#fff;
+  margin:26px 0 22px;
+}
+.hero h1 .grad{
+  background:linear-gradient(100deg,#7dd3fc,#a5b4fc 45%,#67e8f9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero p.lead{font-size:17.5px;line-height:1.85;color:#a9bad9;max-width:560px;margin-bottom:36px}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:44px}
+.hero-stats{display:flex;gap:44px;flex-wrap:wrap;padding-top:32px;border-top:1px solid rgba(255,255,255,.1)}
+.hero-stats .st .n{font-size:28px;font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.2}
+.hero-stats .st .n span{font-size:15px;color:var(--cyan-400);font-weight:600}
+.hero-stats .st .l{font-size:13.5px;color:#8b9dc0;margin-top:4px}
+
+/* Hero 视觉：Portal 手机卡片 */
+.hero-visual{position:relative;display:flex;justify-content:center;perspective:1400px}
+.phone{
+  position:relative;width:320px;border-radius:38px;
+  background:linear-gradient(160deg,#1a2644,#0e1830);
+  border:1px solid rgba(255,255,255,.13);
+  padding:14px;
+  box-shadow:0 60px 120px -40px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.04) inset;
+  transform:rotateY(-11deg) rotateX(5deg);
+  transition:transform .7s var(--ease);
+}
+.phone:hover{transform:rotateY(-5deg) rotateX(2deg) translateY(-6px)}
+.phone-screen{
+  border-radius:26px;background:linear-gradient(180deg,#f6f9ff,#eaf0fd);
+  padding:22px 18px 20px;overflow:hidden;position:relative;
+}
+.phone-notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:78px;height:5px;border-radius:99px;background:rgba(15,23,42,.14)}
+.phone-top{display:flex;align-items:center;gap:9px;margin:12px 0 16px}
+.phone-top .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(140deg,var(--brand-500),var(--brand-700));display:grid;place-items:center;color:#fff}
+.phone-top .dot svg{width:13px;height:13px}
+.phone-top .t{font-size:13px;font-weight:700;color:var(--ink-800);line-height:1.25}
+.phone-top .t small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-400)}
+.portal-title{font-size:15px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;margin-bottom:3px}
+.portal-sub{font-size:11.5px;color:var(--ink-400);margin-bottom:14px}
+.auth-item{
+  display:flex;align-items:center;gap:11px;
+  background:#fff;border:1px solid var(--ink-100);border-radius:13px;
+  padding:11px 13px;margin-bottom:9px;
+  box-shadow:0 2px 8px -4px rgba(15,23,42,.10);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s var(--ease);
+}
+.auth-item:hover{transform:translateX(4px);border-color:var(--brand-200);box-shadow:0 10px 22px -12px rgba(31,71,214,.35)}
+.auth-item .ico{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.auth-item .ico svg{width:16px;height:16px}
+.ai-1 .ico{background:var(--brand-50);color:var(--brand-600)}
+.ai-2 .ico{background:#e7f9f4;color:#0d9488}
+.ai-3 .ico{background:#fff3e6;color:#ea7c1f}
+.ai-4 .ico{background:#fdeef3;color:#db2777}
+.auth-item .tx{font-size:12.5px;font-weight:600;color:var(--ink-800);line-height:1.3}
+.auth-item .tx small{display:block;font-size:10.5px;font-weight:500;color:var(--ink-400)}
+.auth-item .go{margin-left:auto;color:var(--ink-300);font-size:14px}
+.phone-cta{
+  margin-top:6px;text-align:center;padding:11px;border-radius:12px;
+  background:linear-gradient(135deg,var(--brand-500),var(--brand-700));
+  color:#fff;font-size:12.5px;font-weight:600;letter-spacing:.02em;
+  box-shadow:0 12px 24px -12px rgba(31,71,214,.8);
+}
+.float-chip{
+  position:absolute;background:rgba(255,255,255,.97);border-radius:14px;
+  padding:11px 15px;box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:10px;
+  animation:floaty 5.5s ease-in-out infinite;
+}
+.float-chip .ci{width:30px;height:30px;border-radius:9px;display:grid;place-items:center}
+.float-chip .ci svg{width:15px;height:15px}
+.float-chip .ct{font-size:11.5px;font-weight:700;color:var(--ink-800);line-height:1.25}
+.float-chip .ct small{display:block;font-size:10px;font-weight:500;color:var(--ink-400)}
+.chip-a{top:8%;left:-4%;animation-delay:0s}
+.chip-b{bottom:12%;right:-6%;animation-delay:1.6s}
+.chip-c{top:44%;right:-9%;animation-delay:2.8s}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+
+/* ============ 信任条 ============ */
+.trustbar{border-bottom:1px solid var(--ink-100);background:var(--paper);padding:30px 0}
+.trustbar .wrap{display:flex;align-items:center;justify-content:center;gap:56px;flex-wrap:wrap}
+.trustbar .lab{font-size:13px;color:var(--ink-400);font-weight:500;letter-spacing:.02em}
+.trust-item{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:600;color:var(--ink-500);opacity:.82;transition:opacity .3s}
+.trust-item:hover{opacity:1}
+.trust-item svg{width:19px;height:19px;color:var(--brand-500)}
+
+/* ============ 认证方式 ============ */
+.auth-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.auth-card{
+  position:relative;background:#fff;border:1px solid var(--ink-100);
+  border-radius:var(--radius-lg);padding:30px 26px 28px;
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
+  overflow:hidden;
+}
+.auth-card::after{
+  content:"";position:absolute;left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,var(--brand-500),var(--cyan-500));
+  transform:scaleX(0);transform-origin:left;transition:transform .45s var(--ease);
+}
+.auth-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);border-color:transparent}
+.auth-card:hover::after{transform:scaleX(1)}
+.auth-card .num{
+  position:absolute;top:24px;right:26px;font-size:13px;font-weight:700;
+  color:var(--ink-200);letter-spacing:.05em;
+}
+.auth-icon{
+  width:54px;height:54px;border-radius:16px;display:grid;place-items:center;margin-bottom:22px;
+  transition:transform .4s var(--ease);
+}
+.auth-card:hover .auth-icon{transform:scale(1.06) rotate(-4deg)}
+.auth-icon svg{width:25px;height:25px}
+.ic-blue{background:linear-gradient(140deg,var(--brand-50),var(--brand-100));color:var(--brand-600)}
+.ic-teal{background:linear-gradient(140deg,#e7f9f4,#d3f3e9);color:#0d9488}
+.ic-amber{background:linear-gradient(140deg,#fff3e6,#ffe7cc);color:#ea7c1f}
+.ic-pink{background:linear-gradient(140deg,#fdeef3,#fbdce7);color:#db2777}
+.auth-card h3{font-size:18.5px;font-weight:700;color:var(--ink-900);letter-spacing:-.01em;margin-bottom:10px}
+.auth-card p{font-size:14px;color:var(--ink-400);line-height:1.78;margin-bottom:18px}
+.auth-tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--ink-50);color:var(--ink-500)}
+
+/* ============ 架构流程 ============ */
+.arch{background:var(--paper-soft);border-top:1px solid var(--ink-100);border-bottom:1px solid var(--ink-100)}
+.flow{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  background:#fff;border:1px solid var(--ink-100);border-radius:var(--radius-lg);
+  padding:44px 30px;box-shadow:var(--shadow);
+}
+.flow-step{position:relative;text-align:center;padding:0 8px}
+.flow-step:not(:last-child)::after{
+  content:"";position:absolute;top:30px;right:-11px;width:22px;height:2px;
+  background:linear-gradient(90deg,var(--brand-200),var(--brand-400));
+}
+.flow-step:not(:last-child)::before{
+  content:"";position:absolute;top:26px;right:-13px;width:8px;height:8px;
+  border-top:2px solid var(--brand-400);border-right:2px solid var(--brand-400);
+  transform:rotate(45deg);z-index:2;
+}
+.flow-ico{
+  width:62px;height:62px;border-radius:19px;margin:0 auto 16px;
+  display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--brand-50),#fff);
+  border:1px solid var(--brand-100);color:var(--brand-600);
+  box-shadow:0 8px 20px -12px rgba(31,71,214,.35);
+}
+.flow-ico svg{width:27px;height:27px}
+.flow-step h4{font-size:14.5px;font-weight:700;color:var(--ink-900);margin-bottom:6px}
+.flow-step p{font-size:12.5px;color:var(--ink-400);line-height:1.6}
+.flow-note{
+  display:flex;align-items:center;gap:14px;justify-content:center;
+  margin-top:30px;padding:18px 26px;border-radius:var(--radius);
+  background:linear-gradient(120deg,var(--brand-900),var(--brand-700));
+  color:#fff;flex-wrap:wrap;text-align:center;
+}
+.flow-note .fi{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex-shrink:0}
+.flow-note .fi svg{width:18px;height:18px;color:var(--cyan-400)}
+.flow-note b{font-weight:700}
+.flow-note span{color:#b9c9ea;font-size:14.5px}
+
+/* ============ 企业能力 ============ */
+.cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.cap-card{
+  background:#fff;border:1px solid var(--ink-100);border-radius:var(--radius-lg);
+  padding:30px 28px;transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s var(--ease);
+  position:relative;overflow:hidden;
+}
+.cap-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--brand-100)}
+.cap-card::before{
+  content:"";position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle,rgba(53,99,240,.09),transparent 70%);
+  opacity:0;transition:opacity .4s var(--ease);
+}
+.cap-card:hover::before{opacity:1}
+.cap-icon{
+  width:48px;height:48px;border-radius:14px;display:grid;place-items:center;margin-bottom:20px;
+  background:linear-gradient(140deg,var(--brand-500),var(--brand-700));color:#fff;
+  box-shadow:0 10px 22px -12px rgba(31,71,214,.65);
+}
+.cap-icon svg{width:22px;height:22px}
+.cap-card h3{font-size:17px;font-weight:700;color:var(--ink-900);margin-bottom:9px;letter-spacing:-.01em}
+.cap-card p{font-size:14px;color:var(--ink-400);line-height:1.78}
+.cap-card .kv{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.cap-card .kv div{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-500)}
+.cap-card .kv svg{width:14px;height:14px;color:var(--brand-500);flex-shrink:0}
+
+/* ============ 管理后台 ============ */
+.admin{background:var(--paper-soft);border-top:1px solid var(--ink-100);border-bottom:1px solid var(--ink-100)}
+.admin-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:60px;align-items:center}
+.admin-list{display:flex;flex-direction:column;gap:6px;margin-top:34px}
+.admin-row{
+  display:flex;align-items:flex-start;gap:16px;padding:16px 18px;border-radius:var(--radius);
+  transition:background .3s var(--ease),transform .3s var(--ease);cursor:default;
+}
+.admin-row:hover{background:#fff;transform:translateX(4px);box-shadow:var(--shadow-sm)}
+.admin-row .ri{
+  width:40px;height:40px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;
+  background:var(--brand-50);color:var(--brand-600);transition:all .3s var(--ease);
+}
+.admin-row:hover .ri{background:linear-gradient(140deg,var(--brand-500),var(--brand-700));color:#fff}
+.admin-row .ri svg{width:19px;height:19px}
+.admin-row h4{font-size:15px;font-weight:700;color:var(--ink-900);margin-bottom:3px}
+.admin-row p{font-size:13px;color:var(--ink-400);line-height:1.65}
+
+/* 后台仪表盘模拟 */
+.dash{
+  background:#fff;border:1px solid var(--ink-100);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);overflow:hidden;
+}
+.dash-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--ink-100);background:#fbfcfe}
+.dash-bar .bd{width:11px;height:11px;border-radius:50%}
+.bd-r{background:#ff5f57}.bd-y{background:#febc2e}.bd-g{background:#28c840}
+.dash-bar .url{
+  margin-left:12px;flex:1;background:var(--ink-50);border-radius:7px;
+  padding:5px 12px;font-size:11.5px;color:var(--ink-400);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.dash-body{padding:20px}
+.dash-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:linear-gradient(160deg,#fbfcff,#f3f7ff);border:1px solid var(--ink-100);border-radius:13px;padding:14px 15px}
+.kpi .kl{font-size:11px;color:var(--ink-400);font-weight:500;margin-bottom:6px}
+.kpi .kn{font-size:21px;font-weight:700;color:var(--ink-900);letter-spacing:-.02em;line-height:1.1}
+.kpi .kd{font-size:10.5px;color:#0d9488;font-weight:600;margin-top:4px}
+.dash-chart{display:flex;align-items:flex-end;gap:9px;height:96px;padding:0 4px;margin-bottom:20px}
+.dash-chart .bar{
+  flex:1;border-radius:6px 6px 3px 3px;
+  background:linear-gradient(180deg,var(--brand-400),var(--brand-600));
+  opacity:.9;transition:opacity .3s,transform .3s;
+}
+.dash-chart .bar:hover{opacity:1;transform:scaleY(1.04)}
+.dash-chart .bar.c{background:linear-gradient(180deg,var(--cyan-400),var(--cyan-600))}
+.dash-table{border:1px solid var(--ink-100);border-radius:12px;overflow:hidden}
+.dt-head,.dt-row{display:grid;grid-template-columns:1.4fr 1fr .9fr .8fr;gap:8px;padding:10px 14px;font-size:11.5px;align-items:center}
+.dt-head{background:var(--ink-50);color:var(--ink-400);font-weight:600;letter-spacing:.02em}
+.dt-row{border-top:1px solid var(--ink-100);color:var(--ink-600)}
+.dt-row .name{font-weight:600;color:var(--ink-800);display:flex;align-items:center;gap:7px}
+.dt-row .name .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.16)}
+.pill{display:inline-flex;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:600}
+.pill-ok{background:#e7f9f4;color:#0d9488}
+.pill-warn{background:#fff3e6;color:#ea7c1f}
+.pill-blue{background:var(--brand-50);color:var(--brand-600)}
+
+/* ============ 数据/优势 ============ */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.metric{
+  text-align:center;padding:34px 22px;border-radius:var(--radius-lg);
+  background:linear-gradient(165deg,#fff,var(--paper-soft));
+  border:1px solid var(--ink-100);transition:transform .4s var(--ease),box-shadow .4s var(--ease);
+}
+.metric:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.metric .mn{
+  font-size:clamp(32px,4vw,44px);font-weight:700;letter-spacing:-.03em;line-height:1;
+  background:linear-gradient(135deg,var(--brand-600),var(--cyan-500));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.metric .ml{font-size:14px;color:var(--ink-400);margin-top:12px;font-weight:500}
+
+/* ============ CTA ============ */
+.cta{
+  background:
+    radial-gradient(900px 500px at 80% 0%,rgba(34,211,238,.2),transparent 60%),
+    linear-gradient(150deg,#0a1020,#132349 55%,#1a2c5e);
+  color:#fff;position:relative;overflow:hidden;
+}
+.cta::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000,transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000,transparent 75%);
+}
+.cta .wrap{position:relative;z-index:2;text-align:center;max-width:820px}
+.cta h2{font-size:clamp(28px,3.8vw,44px);line-height:1.22;letter-spacing:-.025em;font-weight:700;margin-bottom:20px}
+.cta p{font-size:17px;color:#a9bad9;line-height:1.8;margin-bottom:38px}
+.cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.cta-points{display:flex;gap:30px;justify-content:center;flex-wrap:wrap;margin-top:40px;padding-top:34px;border-top:1px solid rgba(255,255,255,.1)}
+.cta-points div{display:flex;align-items:center;gap:9px;font-size:14px;color:#c7d6f7}
+.cta-points svg{width:17px;height:17px;color:var(--cyan-400)}
+
+/* ============ Footer ============ */
+footer{background:#080d18;color:#8b9dc0;padding:70px 0 34px}
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:48px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08)}
+.foot-brand .logo{color:#fff;margin-bottom:18px}
+.foot-brand p{font-size:14px;line-height:1.8;color:#7d8fb3;max-width:320px}
+.foot-col h5{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:18px;letter-spacing:.02em}
+.foot-col a{display:block;font-size:13.5px;color:#8b9dc0;margin-bottom:11px;transition:color .25s var(--ease),transform .25s var(--ease)}
+.foot-col a:hover{color:var(--cyan-400);transform:translateX(3px)}
+.foot-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:28px;flex-wrap:wrap;gap:16px}
+.foot-bottom p{font-size:13px;color:#66759a}
+.foot-social{display:flex;gap:12px}
+.foot-social a{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.05);display:grid;place-items:center;color:#8b9dc0;transition:all .3s var(--ease)}
+.foot-social a:hover{background:var(--brand-600);color:#fff;transform:translateY(-3px)}
+.foot-social svg{width:17px;height:17px}
+
+/* ============ 滚动动画 ============ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal[data-d="1"]{transition-delay:.08s}
+.reveal[data-d="2"]{transition-delay:.16s}
+.reveal[data-d="3"]{transition-delay:.24s}
+.reveal[data-d="4"]{transition-delay:.32s}
+.reveal[data-d="5"]{transition-delay:.4s}
+
+/* 移动端菜单 */
+.menu-toggle{display:none;width:42px;height:42px;border-radius:11px;border:1px solid var(--ink-200);background:#fff;place-items:center;color:var(--ink-700)}
+.menu-toggle svg{width:20px;height:20px}
+.mobile-menu{
+  display:none;position:fixed;inset:76px 0 auto 0;background:#fff;z-index:99;
+  border-bottom:1px solid var(--ink-100);box-shadow:var(--shadow-lg);padding:20px 28px 26px;
+}
+.mobile-menu.open{display:block;animation:slideDown .3s var(--ease)}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.mobile-menu a{display:block;padding:13px 0;font-size:16px;font-weight:500;color:var(--ink-700);border-bottom:1px solid var(--ink-50)}
+.mobile-menu .btn{width:100%;margin-top:18px}
+
+/* ============ 响应式 ============ */
+@media(max-width:1080px){
+  .hero-grid{grid-template-columns:1fr;gap:70px}
+  .hero-visual{order:-1;transform:scale(.92)}
+  .auth-grid{grid-template-columns:repeat(2,1fr)}
+  .cap-grid{grid-template-columns:repeat(2,1fr)}
+  .admin-grid{grid-template-columns:1fr;gap:44px}
+  .flow{grid-template-columns:repeat(3,1fr);gap:36px 0}
+  .flow-step:nth-child(3)::after,.flow-step:nth-child(3)::before{display:none}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:36px}
+}
+@media(max-width:820px){
+  .nav-links{display:none}
+  .nav-cta .btn-ghost{display:none}
+  .menu-toggle{display:grid}
+  .pad{padding:80px 0}
+  .hero{padding:130px 0 90px}
+  .trustbar .wrap{gap:28px}
+  .flow{grid-template-columns:repeat(2,1fr)}
+  .flow-step:nth-child(2n)::after,.flow-step:nth-child(2n)::before{display:none}
+}
+@media(max-width:620px){
+  .wrap{padding:0 20px}
+  .auth-grid,.cap-grid,.metrics{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr;gap:30px}
+  .flow-step::after,.flow-step::before{display:none!important}
+  .foot-grid{grid-template-columns:1fr;gap:32px}
+  .foot-bottom{flex-direction:column;text-align:center}
+  .hero-stats{gap:28px}
+  .float-chip{display:none}
+  .phone{width:100%;max-width:300px;transform:none}
+  .phone:hover{transform:translateY(-6px)}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 导航 ============ -->
+<header id="header">
+  <div class="wrap nav">
+    <a href="#" class="logo">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+      </span>
+      SecPortal
+    </a>
+    <nav class="nav-links">
+      <a href="#auth">认证方式</a>
+      <a href="#arch">平台架构</a>
+      <a href="#capability">企业能力</a>
+      <a href="#admin">管理后台</a>
+      <a href="#protocol">协议标准</a>
+      <a href="#contact">联系我们</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#auth" class="btn btn-ghost">核心能力</a>
+      <a href="#contact" class="btn btn-primary">
+        获取产品
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="菜单">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#auth">认证方式</a>
+  <a href="#arch">平台架构</a>
+  <a href="#capability">企业能力</a>
+  <a href="#admin">管理后台</a>
+  <a href="#protocol">协议标准</a>
+  <a href="#contact">联系我们</a>
+  <a href="#contact" class="btn btn-primary">获取产品</a>
+</div>
+
+<!-- ============ Hero ============ -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="hero-badge"><b>NEW</b> 自带 RADIUS 服务器 · 企业级准入</span>
+      <h1>企业级<span class="grad">无线访客认证</span><br>与网络准入管控平台</h1>
+      <p class="lead">访客连上 SSID 自动弹出认证页，一键上网 / 短信认证 / 账号认证 / 视频认证等十余种方式自由组合。平台自带 RADIUS 服务器，并内置 LDAP、数据库与前端全部自研，无需额外部署，从认证、授权到计费一站式完成。</p>
+      <div class="hero-actions">
+        <a href="#auth" class="btn btn-primary btn-lg">
+          了解核心能力
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#arch" class="btn btn-on-dark btn-lg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5v14l11-7z"/></svg>
+          了解工作原理
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="st"><div class="n">10<span> +</span></div><div class="l">认证与接入方式</div></div>
+        <div class="st"><div class="n">1<span> 套</span></div><div class="l">内置 RADIUS 服务器</div></div>
+        <div class="st"><div class="n">8<span> 套</span></div><div class="l">内置 Portal 模板</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="float-chip chip-a">
+        <div class="ci ic-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <div class="ct">认证成功<small>VLAN 20 已下发</small></div>
+      </div>
+      <div class="float-chip chip-b">
+        <div class="ci ic-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></div>
+        <div class="ct">AD / LDAP<small>域账号认证</small></div>
+      </div>
+      <div class="float-chip chip-c">
+        <div class="ci ic-amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h4M15 15h2"/></svg></div>
+        <div class="ct">NAS 在线<small>28 台设备</small></div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="phone-top">
+            <span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+            <div class="t">SecPortal<small>访客认证 · 安全接入</small></div>
+          </div>
+          <div class="portal-title">欢迎使用 Wi-Fi</div>
+          <div class="portal-sub">请选择一种方式接入网络</div>
+
+          <div class="auth-item ai-1">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span>
+            <div class="tx">一键上网<small>无需输入，立即接入</small></div>
+            <span class="go">›</span>
+          </div>
+          <div class="auth-item ai-2">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg></span>
+            <div class="tx">短信认证<small>手机号 + 验证码</small></div>
+            <span class="go">›</span>
+          </div>
+          <div class="auth-item ai-3">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span>
+            <div class="tx">账号认证<small>用户名 + 密码</small></div>
+            <span class="go">›</span>
+          </div>
+          <div class="auth-item ai-4">
+            <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="10 8 16 12 10 16 10 8"/><rect x="2" y="4" width="20" height="16" rx="3"/></svg></span>
+            <div class="tx">视频认证<small>观看视频免费上网</small></div>
+            <span class="go">›</span>
+          </div>
+
+          <div class="phone-cta">立即接入网络</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 信任条 ============ -->
+<div class="trustbar">
+  <div class="wrap">
+    <span class="lab">企业级协议与标准支持</span>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>RADIUS / RFC 2865·2866</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M4 7h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/></svg>AD / LDAP 域认证</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/><circle cx="12" cy="12" r="10"/></svg>VLAN 动态下发</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>无感知认证</div>
+    <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>CoA / RFC 5176</div>
+  </div>
+</div>
+
+<!-- ============ 认证方式 ============ -->
+<section class="pad" id="auth">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Authentication</span>
+      <h2>丰富认证方式，灵活组合，覆盖全部访客场景</h2>
+      <p>除了一键、短信、账号、视频四种核心方式，还支持上网券、统一登录（SAML）、微信 / 企业微信、钉钉与付费上网等扩展方式，可按 SSID、NAS、用户组与时间段配置认证策略，访客连上无线即自动弹出 Portal 完成接入。</p>
+    </div>
+    <div class="auth-grid">
+      <article class="auth-card reveal" data-d="1">
+        <span class="num">01</span>
+        <div class="auth-icon ic-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+        </div>
+        <h3>一键上网</h3>
+        <p>访客点击「立即上网」即可接入，无需任何信息输入，默认会话 4 小时，适合商场、展厅、会议室等追求极致体验的场景。</p>
+        <div class="auth-tags"><span class="tag">零输入</span><span class="tag">极速接入</span><span class="tag">可限时长</span></div>
+      </article>
+
+      <article class="auth-card reveal" data-d="2">
+        <span class="num">02</span>
+        <div class="auth-icon ic-teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg>
+        </div>
+        <h3>短信认证</h3>
+        <p>访客输入手机号获取验证码完成接入，满足公共场所实名合规要求，内置限流防骚扰，支持阿里云 / 腾讯云 / 赛邮等多通道。</p>
+        <div class="auth-tags"><span class="tag">实名合规</span><span class="tag">验证码校验</span><span class="tag">多通道</span></div>
+      </article>
+
+      <article class="auth-card reveal" data-d="3">
+        <span class="num">03</span>
+        <div class="auth-icon ic-amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        </div>
+        <h3>账号认证</h3>
+        <p>使用管理员统一分配的账号密码接入，本地密码校验失败时自动回退 AD 域认证，支持有效期、流量、并发等多维管控。</p>
+        <div class="auth-tags"><span class="tag">账号池</span><span class="tag">AD 回退</span><span class="tag">限速策略</span></div>
+      </article>
+
+      <article class="auth-card reveal" data-d="4">
+        <span class="num">04</span>
+        <div class="auth-icon ic-pink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="10 8 16 12 10 16 10 8"/><rect x="2" y="4" width="20" height="16" rx="3"/></svg>
+        </div>
+        <h3>视频 / 广告认证</h3>
+        <p>访客观看视频或广告后免费上网，服务端强制校验真实观看时长、拦截跳过，用于商业运营与营销触达场景。</p>
+        <div class="auth-tags"><span class="tag">防跳过</span><span class="tag">时长校验</span><span class="tag">营销触达</span></div>
+      </article>
+    </div>
+
+    <div class="flow-note reveal">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><b>更多接入方式</b> <span>· 相邻验证：上网券 · 统一登录（SAML）· 微信 / 企业微信 · 钉钉 · 付费上网</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 架构 ============ -->
+<section class="pad arch" id="arch">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Architecture</span>
+      <h2>自带 RADIUS，认证到准入一步到位</h2>
+      <p>SecPortal 将 Portal 认证服务与 RADIUS 服务器深度集成，无需再单独部署认证服务器，大幅降低部署与运维成本。</p>
+    </div>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M11 18h2"/></svg></div>
+        <h4>访客连接 SSID</h4>
+        <p>终端接入无线网络</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M2 9h20"/></svg></div>
+        <h4>自动弹出 Portal</h4>
+        <p>重定向至认证页面</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>选择认证方式</h4>
+        <p>四种方式任选其一</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+        <h4>内置 RADIUS 校验</h4>
+        <p>鉴权 · 授权 · 计费</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h4>下发策略并放行</h4>
+        <p>VLAN / 限速 / 时长</p>
+      </div>
+    </div>
+
+    <div class="flow-note reveal">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></span>
+      <div><b>内置 RADIUS 服务器</b> <span>· 无需额外部署认证服务器，鉴权、授权、计费一体化，分钟级完成上线</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 企业能力 ============ -->
+<section class="pad" id="capability">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Enterprise Capabilities</span>
+      <h2>面向企业的进阶准入能力</h2>
+      <p>从域认证、VLAN 精细划分到无感知接入，SecPortal 提供完整的企业级身份与网络准入解决方案，轻松融入现有 IT 体系。</p>
+    </div>
+
+    <div class="cap-grid">
+      <article class="cap-card reveal" data-d="1">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M4 7h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/><path d="M9 12h6"/></svg></div>
+        <h3>AD / LDAP 域认证</h3>
+        <p>对接企业现有 Active Directory 或 LDAP 目录服务，员工使用域账号一键接入，无需重复建号。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>支持多域、多目录服务器</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>账号状态实时同步</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="2">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M6 7V4h12v3M12 11v6M9 14h6"/></svg></div>
+        <h3>按 OU / 账号 / 用户组下发 VLAN</h3>
+        <p>依据 AD OU、账号或用户组自动匹配 VLAN，实现部门网络隔离与权限最小化，策略清晰可维护。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>OU / 用户组多维匹配</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>动态 VLAN 精准下发</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="3">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0114 0M8.5 16a5 5 0 017 0M12 19.5h.01"/></svg></div>
+        <h3>无感知认证</h3>
+        <p>终端首次认证后自动记忆，再次进入覆盖范围无需重复认证，员工与常客体验无感顺滑。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>基于 MAC 免认证放行</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>有效期与设备数可控</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="1">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h4M15 15h2"/></svg></div>
+        <h3>MAC 厂商标识</h3>
+        <p>基于 OUI 库自动识别终端厂商与设备类型，识别手机、笔记本、IoT 设备，为差异化策略提供依据。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>海量厂商 OUI 库</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>设备类型自动分类</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="2">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h3>Portal 模板与轮播管理</h3>
+        <p>内置多套 Portal 模板，支持自定义 Logo、配色与轮播图，无需开发即可打造品牌化认证页面。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>多模板可视化配置</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>轮播图与跳转链接</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="3">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>产品授权管理</h3>
+        <p>灵活的授权体系，支持按设备数、并发数、功能模块授权，离线授权与在线校验兼顾。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>按模块 / 容量授权</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>授权状态实时可见</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="1">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 8h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/><path d="M9 15h6M9 11h2"/></svg></div>
+        <h3>上网券与付费上网</h3>
+        <p>批量生成上网券码，适合酒店、医院、展会等运营发券场景；亦可配置时长 + 流量套餐实现付费上网与授权收款。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>批量发券 / 核销</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>套餐定价与支付通道</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="2">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg></div>
+        <h3>统一登录（SAML）</h3>
+        <p>与企业 IdP（Entra ID / AD FS / Okta）深度集成，实现企业单点登录，断言验签、防重放等安全边界完备。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>对接主流 IdP</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>安全断言验签</div>
+        </div>
+      </article>
+
+      <article class="cap-card reveal" data-d="3">
+        <div class="cap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13l2 2 4-4"/></svg></div>
+        <h3>会话计费与日志审计</h3>
+        <p>完整计费链路（Start / Interim / Stop）、实时计数与在线会话，全量认证日志与操作审计，支持 CSV 导出与合规追溯。</p>
+        <div class="kv">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>流量实时统计</div>
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>审计日志与导出</div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 管理后台 ============ -->
+<section class="pad admin" id="admin">
+  <div class="wrap">
+    <div class="admin-grid">
+      <div class="reveal">
+        <span class="eyebrow">Management Console</span>
+        <h2 style="font-size:clamp(26px,3.2vw,38px);line-height:1.24;letter-spacing:-.02em;font-weight:700;color:var(--ink-900);margin:18px 0 16px;">统一后台，掌控每一次接入</h2>
+        <p style="font-size:16px;color:var(--ink-400);line-height:1.8;">从 NAS 设备、账号、认证策略到在线会话与日志审计，所有管理动作集中在一个控制台完成，运维效率成倍提升。</p>
+        <div class="admin-list">
+          <div class="admin-row">
+            <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 15h4M15 15h2"/></svg></div>
+            <div><h4>NAS 设备管理</h4><p>批量纳管无线控制器、AP、交换机等 NAS 设备，共享密钥与状态一目了然。</p></div>
+          </div>
+          <div class="admin-row">
+            <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9"/></svg></div>
+            <div><h4>账号管理</h4><p>统一创建、批量导入访客与员工账号，支持有效期、限速、并发数与流量管控。</p></div>
+          </div>
+          <div class="admin-row">
+            <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg></div>
+            <div><h4>认证策略</h4><p>按 SSID、时间、用户组编排认证方式与准入规则，策略一次配置全局生效。</p></div>
+          </div>
+          <div class="admin-row">
+            <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div><h4>在线会话</h4><p>实时查看在线终端、上下线时间、流量与接入位置，支持一键强制下线。</p></div>
+          </div>
+          <div class="admin-row">
+            <div class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div>
+            <div><h4>日志审计</h4><p>完整记录认证、授权、上下线日志，满足合规审计与安全溯源要求。</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" data-d="1">
+        <div class="dash">
+          <div class="dash-bar">
+            <span class="bd bd-r"></span><span class="bd bd-y"></span><span class="bd bd-g"></span>
+            <span class="url">https://portal.your-company.com/admin/console</span>
+          </div>
+          <div class="dash-body">
+            <div class="dash-kpis">
+              <div class="kpi"><div class="kl">在线会话</div><div class="kn">1,284</div><div class="kd">↑ 12.4% 今日</div></div>
+              <div class="kpi"><div class="kl">NAS 设备</div><div class="kn">28</div><div class="kd">全部在线</div></div>
+              <div class="kpi"><div class="kl">今日认证</div><div class="kn">3,672</div><div class="kd">↑ 8.1% 环比</div></div>
+            </div>
+            <div class="dash-chart">
+              <div class="bar" style="height:42%"></div>
+              <div class="bar" style="height:58%"></div>
+              <div class="bar c" style="height:74%"></div>
+              <div class="bar" style="height:50%"></div>
+              <div class="bar" style="height:88%"></div>
+              <div class="bar c" style="height:66%"></div>
+              <div class="bar" style="height:96%"></div>
+              <div class="bar" style="height:72%"></div>
+              <div class="bar c" style="height:84%"></div>
+              <div class="bar" style="height:60%"></div>
+            </div>
+            <div class="dash-table">
+              <div class="dt-head"><span>访客 / 终端</span><span>认证方式</span><span>VLAN</span><span>状态</span></div>
+              <div class="dt-row"><span class="name"><span class="dot"></span>iPhone · 王先生</span><span>短信认证</span><span>VLAN 20</span><span class="pill pill-ok">在线</span></div>
+              <div class="dt-row"><span class="name"><span class="dot"></span>MacBook · 李工</span><span>AD 域认证</span><span>VLAN 10</span><span class="pill pill-ok">在线</span></div>
+              <div class="dt-row"><span class="name"><span class="dot"></span>Android · 访客</span><span>一键上网</span><span>VLAN 30</span><span class="pill pill-blue">已授权</span></div>
+              <div class="dt-row"><span class="name"><span class="dot" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.16)"></span>iPad · 展厅</span><span>视频认证</span><span>VLAN 40</span><span class="pill pill-warn">即将超时</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 指标 ============ -->
+<section class="pad-sm">
+  <div class="wrap">
+    <div class="metrics">
+      <div class="metric reveal" data-d="1"><div class="mn" data-count="10" data-suffix="+">0</div><div class="ml">认证与接入方式</div></div>
+      <div class="metric reveal" data-d="2"><div class="mn" data-count="8" data-suffix=" 套">0</div><div class="ml">内置 Portal 模板</div></div>
+      <div class="metric reveal" data-d="3"><div class="mn" data-count="66" data-suffix="+">0</div><div class="ml">内置 MAC 厂商标识</div></div>
+      <div class="metric reveal" data-d="4"><div class="mn" data-count="0" data-suffix=" 外部依赖">0</div><div class="ml">仅依赖 Express</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 协议标准 ============ -->
+<section class="pad arch" id="protocol">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">Standards</span>
+      <h2>协议与标准，全面合规</h2>
+      <p>内置自研 RADIUS / LDAP 协议栈，兼容主流厂商设备，无需外部组件即可深度融入企业现有网络架构。</p>
+    </div>
+
+    <div class="flow reveal">
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h4>标准 RADIUS</h4>
+        <p>RFC 2865 / 2866 认证计费</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg></div>
+        <h4>动态授权</h4>
+        <p>CoA / RFC 5176 强制下线</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 012-2h12a2 2 0 012 2v2M4 7h16v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7z"/></svg></div>
+        <h4>LDAP / AD</h4>
+        <p>自研客户端 · 域认证</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M6 7V4h12v3M12 11v6M9 14h6"/></svg></div>
+        <h4>VLAN 下发</h4>
+        <p>RFC 2868 Tunnel 属性</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h4>多厂商兼容</h4>
+        <p>Cisco · 华为 · Aruba 等</p>
+      </div>
+    </div>
+
+    <div class="flow-note reveal">
+      <span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/></svg></span>
+      <div><b>安全设计</b> <span>· 密码 scrypt 加盐哈希 · 票据 HMAC 签名 · 授权码 Ed25519 验签 · 短信防刷与账号锁定</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA / 联系我们 ============ -->
+<section class="pad cta" id="contact">
+  <div class="wrap">
+    <h2 class="reveal">让每一次无线接入<br>都安全、合规、可控</h2>
+    <p class="reveal" data-d="1">我们希望与更多生态伙伴与客户交流，获取部署文档、功能详情与演示，请通过我们的项目主页与我们联系。</p>
+    <div class="cta-actions reveal" data-d="2">
+      <a href="https://github.com/lechance/SecPortalpub" class="btn btn-primary btn-lg" target="_blank" rel="noopener">
+        访问项目主页
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="https://github.com/lechance/SecPortalpub" class="btn btn-on-dark btn-lg" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        GitHub 社区
+      </a>
+    </div>
+    <div class="cta-points reveal" data-d="3">
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>README 完整文档</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>部署与接入指南</div>
+      <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>生态合作洽谈</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Footer ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="logo">
+          <span class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></span>
+          SecPortal
+        </div>
+        <p>自带 RADIUS 服务器的企业级无线访客认证与网络准入管控平台，让每一次接入都安全、合规、可控。</p>
+      </div>
+      <div class="foot-col">
+        <h5>产品功能</h5>
+        <a href="#auth">一键上网</a>
+        <a href="#auth">短信认证</a>
+        <a href="#auth">账号认证</a>
+        <a href="#auth">视频认证</a>
+      </div>
+      <div class="foot-col">
+        <h5>企业能力</h5>
+        <a href="#capability">AD / LDAP 域认证</a>
+        <a href="#capability">VLAN 动态下发</a>
+        <a href="#capability">无感知认证</a>
+        <a href="#capability">统一登录（SAML）</a>
+      </div>
+      <div class="foot-col">
+        <h5>支持</h5>
+        <a href="#admin">管理后台</a>
+        <a href="#arch">部署架构</a>
+        <a href="#protocol">协议标准</a>
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener">联系我们</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <p>© 2026 SecPortal. All rights reserved.</p>
+      <div class="foot-social">
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.02-.02-2-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.75.4-1.25.72-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 015.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.73.81 1.18 1.84 1.18 3.1 0 4.43-2.7 5.4-5.27 5.69.41.35.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.56A11.51 11.51 0 0023.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></a>
+        <a href="https://github.com/lechance/SecPortalpub" target="_blank" rel="noopener" aria-label="项目主页"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- 导航滚动状态 ---------- */
+const header=document.getElementById('header');
+const onScroll=()=>{ header.classList.toggle('scrolled',window.scrollY>24); };
+onScroll(); window.addEventListener('scroll',onScroll,{passive:true});
+
+/* ---------- 移动端菜单 ---------- */
+const mt=document.getElementById('menuToggle'), mm=document.getElementById('mobileMenu');
+mt.addEventListener('click',()=>mm.classList.toggle('open'));
+mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.remove('open')));
+
+/* ---------- 滚动揭示 ---------- */
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+},{threshold:.14,rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- 数字滚动 ---------- */
+const fmt=(n)=>{ 
+  if(n>=100000) return (n/10000).toFixed(0)+' 万';
+  if(n%1!==0) return n.toFixed(2);
+  return n.toLocaleString('en-US');
+};
+const counters=document.querySelectorAll('.mn[data-count]');
+const cio=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target, target=parseFloat(el.dataset.count), suffix=el.dataset.suffix||'';
+    const dur=1500, t0=performance.now();
+    const tick=(now)=>{
+      const p=Math.min((now-t0)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      const val=target*ease;
+      el.textContent=(target>=100000? (Math.round(val/10000)) : fmt(val))+suffix;
+      if(p<1) requestAnimationFrame(tick);
+      else el.textContent=(target>=100000? (target/10000).toFixed(0) : fmt(target))+suffix;
+    };
+    requestAnimationFrame(tick);
+    cio.unobserve(el);
+  });
+},{threshold:.5});
+counters.forEach(el=>cio.observe(el));
+
+/* ---------- 平滑锚点（补偿固定导航） ---------- */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',ev=>{
+    const id=a.getAttribute('href');
+    if(id.length<2) return;
+    const t=document.querySelector(id);
+    if(!t) return;
+    ev.preventDefault();
+    const y=t.getBoundingClientRect().top+window.scrollY-84;
+    window.scrollTo({top:y,behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
