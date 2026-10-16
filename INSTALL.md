@@ -78,7 +78,7 @@ journalctl -u secportal -f        # 看到 RADIUS / Portal / HTTP 启动横幅�
    想先体验可申请 30 天试用授权（1 NAS / 5 用户 / 10 在线）。
    容器 / 虚拟机建议设 `SECPORTAL_LICENSE_MACHINE_CODE` 钉死指纹（主机名 / 网卡变动会使已激活授权失效）。
 3. 删除 4 台演示 NAS（`HQ-WLC-01`、`HQ-WLC-02`、`CAMPUS-GW`、`LOCAL-DEMO`，密钥均为 `testing123`），登记真实设备并**每台独立密钥**；保持「未登记 NAS 拒绝」。
-4. 删除 / 停用演示账号（`vip001`、`staff001`、`guest001`）与示例策略；历史演示日志用「系统状态 → 数据维护」清理。
+4. 删除 / 停用演示账号（`vip001`、`staff001`、`guest001`）与示例策略；历史演示日志用「系统配置 → 数据维护」清理。
 5. 短信通道切真实（`aliyun` / `tencent` / `submail`）并发送测试短信 —— `mock` 会把验证码直接回显给访客（短信是授权功能，需先激活授权）。
 6. NAS 实测认证：访客应跳到 https 门户页，认证放行后可上网。
 
@@ -120,4 +120,4 @@ sudo systemctl start secportal && journalctl -u secportal -f
 | NAS 认证无响应 | 检查 1812/1813 防火墙、NAS 上的服务器 IP 与共享密钥、后台「未登记 NAS 拒绝」设置；服务端日志 `journalctl -u secportal` |
 | 访客被跳到内网地址 | `SECPORTAL_SERVER_PUBLIC_URL` 未配或不是 https |
 | 后台实时指标不刷新 | 反代没关 `/api/events` 的 buffering |
-| 报障需要版本/构建信息 | 后台「系统状态 → 运行环境 · 软件版本」，或 `GET /api/public/health` 返回的 `build` 字段（如 `1.0.0+gc77793a`，`.dirty` 表示含未提交改动） |
+| 报障需要版本/构建信息 | 后台「系统配置 → 系统信息 → 运行环境 · 软件版本」，或 `GET /api/public/health` 返回的 `build` 字段（如 `1.0.0+gc77793a`，`.dirty` 表示含未提交改动） |
